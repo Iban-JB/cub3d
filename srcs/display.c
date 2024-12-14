@@ -61,28 +61,28 @@ void	draw_minimap(t_cube *cube)
 	draw_rectangle(cube, cube->player->pos.x - TILE_SIZE / 2, cube->player->pos.y - TILE_SIZE / 2, PINK);
 }
 
-void	draw_ray_minimap(t_cube * cube, double angle, double len)
-{
-	int			i;
-	t_Vector2D	dir;
-	t_Vector2D	ray;
-	t_Vector2D	limit;
+// void	draw_ray_minimap(t_cube * cube, double angle, double len)
+// {
+// 	int			i;
+// 	t_Vector2D	dir;
+// 	t_Vector2D	ray;
+// 	t_Vector2D	limit;
 
-	i = -1;
-	dir.x = cos(angle);
-	dir.y = -sin(angle);
-	limit.x = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->nb_line));
-	limit.y = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->len_line));
-	while (++i < len) //ajouter la dist de (colision / TILE_SIZE) pour arreter de rayon au bon endroit || param len pour la taille du rayon
-	{
-		ray.x = cube->player->pos.x + dir.x * i;
-		ray.y = cube->player->pos.y + dir.y * i;
-		if (ray.x > 0 && ray.x < limit.x && ray.y > 0 && ray.y < limit.y)
-			put_pixel(cube, RED, ray.x, ray.y);
-		else
-			break;
-	}
-}
+// 	i = -1;
+// 	dir.x = cos(angle);
+// 	dir.y = -sin(angle);
+// 	limit.x = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->nb_line));
+// 	limit.y = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->len_line));
+// 	while (++i < len) //ajouter la dist de (colision / TILE_SIZE) pour arreter de rayon au bon endroit || param len pour la taille du rayon
+// 	{
+// 		ray.x = cube->player->pos.x + dir.x * i;
+// 		ray.y = cube->player->pos.y + dir.y * i;
+// 		if (ray.x > 0 && ray.x < limit.x && ray.y > 0 && ray.y < limit.y)
+// 			put_pixel(cube, RED, ray.x, ray.y);
+// 		else
+// 			break;
+// 	}
+// }
 
 int	display_cube(t_cube *cube)
 {
