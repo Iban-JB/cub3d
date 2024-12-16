@@ -24,9 +24,9 @@
 # include <math.h>
 
 # define TITLE "cub3D"
-# define HEIGHT 2048
-# define WIDTH 2048
-# define TILE_SIZE 32
+# define HEIGHT 1080
+# define WIDTH 1920
+# define TILE_SIZE 16
 # define RAYMAX 500
 # define FOV 60
 
@@ -191,4 +191,6 @@ void	handle_moves(t_cube *cube);
 void	cast_rays(t_cube *cube);
 void	turn_player(t_cube *cube, int keycode);
 void	draw_ray_minimap(t_cube * cube, double angle, double len);
+t_bool	is_minimap(t_cube *cube, int x, int y);
+
 #endif

@@ -41,7 +41,7 @@ int	get_len_max(char **map)
 		j = 0;
 		while (map[i][j])
 			j++;
-		if (j > len_max)
+		if (j < len_max)
 			len_max = j;
 		i++;
 	}
