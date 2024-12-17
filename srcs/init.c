@@ -54,6 +54,9 @@ void	set_cube_null(t_cube *cube)
 	cube->player = ft_calloc(1, sizeof(t_player_info));
 	if (!cube->player)
 		free_exit(cube);
+	cube->ray = ft_calloc(1, sizeof(t_ray));
+	if (!cube->ray)
+		free_exit(cube);
 	cube->mi->check.c = false;
 	cube->mi->check.f = false;
 	cube->mi->check.n = false;

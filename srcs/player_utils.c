@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:21:54 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/11/20 16:51:56 by talibert         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:58:27 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@ void	set_spawn_player(t_cube *cube, int i, int j)
 
 	spawn_dir = cube->mi->map[i][j];
 	if (spawn_dir == 'N')
-		cube->player->angle = RNORTH;
+		cube->player->angle = RNORTH; //angle du joueur par rapport a sa direction de spawn
 	else if (spawn_dir == 'S')
-		cube->player->angle = RSOUTH;
+		cube->player->angle = RSOUTH; //pareil sud
 	else if (spawn_dir == 'E')
-		cube->player->angle = 0;
+		cube->player->angle = 0;  //pareil est
 	else if (spawn_dir == 'W')
-		cube->player->angle = RWEST;
-	cube->player->pos.y = (i * TILE_SIZE) + TILE_SIZE / 2;
-	cube->player->pos.x = (j * TILE_SIZE) + TILE_SIZE / 2;
+		cube->player->angle = RWEST;  //pareil ouest
+	cube->player->pos.y = (i * TILE_SIZE) + TILE_SIZE / 2; //  + TILE_SIZE / 2
+	cube->player->pos.x = (j * TILE_SIZE) + TILE_SIZE / 2; //  + TILE_SIZE / 2
 }
 
 void	find_spawn_player(t_cube *cube)
@@ -59,6 +59,8 @@ void	find_spawn_player(t_cube *cube)
 			{
 				set_spawn_player(cube, i, j);
 				cube->mi->map[i][j] = '0';
+				printf("player pos x = %d\n", i);
+				printf("player pos y = %d\n", j);
 				break;
 			}
 			j++;

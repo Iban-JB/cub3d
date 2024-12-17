@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:39:19 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/11/20 18:00:18 by talibert         ###   ########.fr       */
+/*   Updated: 2024/12/17 14:02:17 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
 # include <math.h>
 
 # define TITLE "cub3D"
-# define HEIGHT 1080
-# define WIDTH 1920
-# define TILE_SIZE 16
+# define HEIGHT 720
+# define WIDTH 1080
+# define TILE_SIZE 8
 # define RAYMAX 500
 # define FOV 60
 
@@ -38,12 +38,16 @@
 # define GRAY 0x808080
 # define BLACK 0
 
-# define MARGIN 3
+# define FORWARD 0
+# define BACKWARD 1
+# define LEFT 2
+# define RIGHT 3
+# define MARGIN TILE_SIZE / 4
 
 # define M_PI 3.14159265358979323846
 # define RWEST 3.14159265358979323846
-# define RNORTH M_PI / 2
 # define RSOUTH 3 * M_PI / 2
+# define RNORTH M_PI / 2
 # define REAST 0
 # define RADIAN 0.0174533f
 
@@ -139,14 +143,19 @@ typedef struct s_ray
 	t_Vector2D	step;
 	t_Vector2D	s_dst;
 	t_Vector2D	d_dst;
+	t_Vector2D	cam_plane;
+	t_Vector2D	map;
+	t_Vector2D	prev;
 	double		angle;
-	double		cam_plane;
 	double		wall_dst;
 	double		wall_x;
 	int			side;
+	int 		hit;
+	char		face;
 	int			height;
-	int			map_x;
-	int			map_y;
+	int			draw_start;
+	int			draw_end;
+	int			color;
 }	t_ray;
 
 typedef struct s_cube
@@ -189,8 +198,9 @@ void	update_pos_player(t_cube *cube, double new_x, double new_y);
 int		key_release(int keycode, t_cube *cube);
 void	handle_moves(t_cube *cube);
 void	cast_rays(t_cube *cube);
+void    draw_rectangle(t_cube *cube, int x, int y, int color, int size);
 void	turn_player(t_cube *cube, int keycode);
-void	draw_ray_minimap(t_cube * cube, double angle, double len);
-t_bool	is_minimap(t_cube *cube, int x, int y);
+t_bool	is_wall(t_cube *cube, double y, double x, int flag);
+void	draw_ray_minimap(t_cube * cube, double angle, double wall_dist);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 17:29:31 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/10/23 17:56:37 by talibert         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:58:05 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	get_len_max(char **map)
 		j = 0;
 		while (map[i][j])
 			j++;
-		if (j < len_max)
+		if (j > len_max)
 			len_max = j;
 		i++;
 	}

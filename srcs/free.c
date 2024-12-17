@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:49:55 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/11/20 18:00:18 by talibert         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:09:59 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ void	free_exit(t_cube *cube)
 			free(cube->player);
 		if (cube->mi)
 			free_map_info(cube);
+		if (cube->ray)
+			free(cube->ray);
 		free_mlx(cube);
 		free(cube);
 	}

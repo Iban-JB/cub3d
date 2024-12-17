@@ -6,32 +6,28 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:59:52 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/11/20 15:38:35 by talibert         ###   ########.fr       */
+/*   Updated: 2024/12/16 17:48:44 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-void    draw_rectangle(t_cube *cube, int x, int y, int color)
+void    draw_rectangle(t_cube *cube, int x, int y, int color, int size)
 {
-	int			i;
-	int			j;
-	t_Vector2D	limit;
+	int	i;
+	int	j;
 
-	limit.x = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->nb_line));
-	limit.y = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->len_line));
 	if (!cube->data->img || !cube->data->addr)
 		return;
 	i = 0;
-	while (i < TILE_SIZE)
+	while (i < size)
 	{
 		j = 0;
-		while (j < TILE_SIZE)
+		while (j < size)
 		{
-			if ((j == 0 || j == TILE_SIZE || i == 0 || i == TILE_SIZE) \
-			&& (i + x > 0 && i + x < limit.x && y + j > 0 && y + j < limit.x))
+			if (j == 0 || j == size || i == 0 || i == size)
 				put_pixel(cube, BLACK, x + i, y + j);
-			else if (i + x > 0 && i + x < limit.x && y + j > 0 && y + j < limit.x)
+			else 
 				put_pixel(cube, color, x + i, y + j);
 			j++;
 		}
@@ -43,7 +39,6 @@ void	draw_minimap(t_cube *cube)
 {
 	int	x;
 	int	y;
-
 	x = 0;
 	while (cube->mi->map[x])
 	{
@@ -51,41 +46,50 @@ void	draw_minimap(t_cube *cube)
 		while (cube->mi->map[x][y])
 		{
 			if (cube->mi->map[x][y] == '1')
-				draw_rectangle(cube, y * TILE_SIZE, x * TILE_SIZE, WHITE); 
+				draw_rectangle(cube, y * TILE_SIZE, x * TILE_SIZE, WHITE, TILE_SIZE); 
 			else if (cube->mi->map[x][y] == '0')
-				draw_rectangle(cube, y * TILE_SIZE, x * TILE_SIZE, GRAY);
+				draw_rectangle(cube, y * TILE_SIZE, x * TILE_SIZE, GRAY, TILE_SIZE);
 			y++;
 		}
 		x++;
 	}
-	draw_rectangle(cube, cube->player->pos.x - TILE_SIZE / 2, cube->player->pos.y - TILE_SIZE / 2, PINK);
+	draw_rectangle(cube, cube->player->pos.x - TILE_SIZE / 2, cube->player->pos.y - TILE_SIZE / 2, PINK, TILE_SIZE);
 }
 
-void	draw_ray_minimap(t_cube * cube, double angle, double len)
+void	draw_ray_minimap(t_cube * cube, double angle, double wall_dst)
 {
-	int			i;
-	t_Vector2D	dir;
+	// t_Vector2D	dir;
 	t_Vector2D	ray;
-	t_Vector2D	limit;
 
-	i = -1;
-	dir.x = cos(angle);
-	dir.y = -sin(angle);
-	limit.x = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->nb_line));
-	limit.y = (WIDTH - (WIDTH - TILE_SIZE * cube->mi->len_line));
-	while (++i < len) //ajouter la dist de (colision / TILE_SIZE) pour arreter de rayon au bon endroit || param len pour la taille du rayon
+	int	i = -1;
+	cube->ray->dir.x = cos(angle);
+	cube->ray->dir.y = sin(-angle);
+	// printf("dist = %d\n", dist);
+	while (++i < wall_dst) //ajouter la dist de (colision / TILE_SIZE) pour arreter de rayon au bon endroit
 	{
-		ray.x = cube->player->pos.x + dir.x * i;
-		ray.y = cube->player->pos.y + dir.y * i;
-		if (ray.x > 0 && ray.x < limit.x && ray.y > 0 && ray.y < limit.y)
-			put_pixel(cube, RED, ray.x, ray.y);
-		else
-			break;
+		ray.x = cube->player->pos.x + cube->ray->dir.x * i;
+		ray.y = cube->player->pos.y + cube->ray->dir.y * i;
+		put_pixel(cube, RED, ray.x, ray.y);
 	}
 }
 
 int	display_cube(t_cube *cube)
 {
+	int	i;
+	int	j;
+	
+	i = 0;
+	j = 0;
+	while (i <= WIDTH && j <= HEIGHT)
+	{
+		put_pixel(cube, BLACK, i, j);
+		if (i == WIDTH)
+		{
+			i = 0;
+			j++;
+		}
+		i++;
+	}
 	handle_moves(cube);
 	draw_minimap(cube);
 	cast_rays(cube);
