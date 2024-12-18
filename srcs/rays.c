@@ -12,15 +12,6 @@
 
 #include "cub3D.h"
 
-double	get_ray_angle(t_cube *cube, int nb_ray)
-{
-	double	ray_angle;
-
-	(void)nb_ray;
-	ray_angle = (cube->player->angle - cube->player->fov / 2);
-	return (ray_angle);
-}
-
 char get_face(t_Vector2D hit, int x, int y)
 {
 	t_Vector2D center;
@@ -39,28 +30,47 @@ char get_face(t_Vector2D hit, int x, int y)
 		return ('N');
 }
 
-double	get_inter(t_cube *cube, double ray_angle)
+void	find_wall_hit(t_cube *cube, t_ray2 *ray, t_Vector2D *prev)
 {
-	int			hit;
-	double		step;
+	t_bool	hit;
 
-	step = 0.125;
-	hit = 0;
-	cube->ray->map.y = (cube->player->pos.y); // - (TILE_SIZE / 2);
-	cube->ray->map.x = (cube->player->pos.x);	
-	cube->ray->dir.x = cos(ray_angle);
-	cube->ray->dir.y = sin(-ray_angle);
-	while (hit == 0)
+	hit = false;
+	while (!hit)
 	{
-		cube->ray->prev.x = cube->ray->map.x;
-		cube->ray->prev.y = cube->ray->map.y;
-		cube->ray->map.x += cube->ray->dir.x * step;
-		cube->ray->map.y += cube->ray->dir.y * step;
-		if (cube->mi->map[(int)(cube->ray->map.y / TILE_SIZE)][(int)(cube->ray->map.x / TILE_SIZE)] == '1')
-			hit = 1;
+		prev->x = ray->pos.x;
+		prev->y = ray->pos.y;
+		ray->pos.x += ray->dir.x * ray->step;
+		ray->pos.y += ray->dir.y * ray->step;
+		if (cube->mi->map[(int)(ray->pos.y / TILE_SIZE)][(int)(ray->pos.x / TILE_SIZE)] == '1')
+			hit = true;
 	}
-	cube->ray->face = get_face(cube->ray->map, (int)cube->ray->map.x / TILE_SIZE, (int)cube->ray->map.y / TILE_SIZE);
-	return (sqrt(pow(cube->ray->prev.x - cube->player->pos.x, 2) + pow(cube->ray->prev.y - cube->player->pos.y, 2)));
+	hit = false;
+	ray->step = 0.00001;
+	ray->pos.x = prev->x;
+	ray->pos.y = prev->y;
+	while (!hit)
+	{
+		prev->x = ray->pos.x;
+		prev->y = ray->pos.y;
+		ray->pos.x += ray->dir.x * ray->step;
+		ray->pos.y += ray->dir.y * ray->step;
+		if (cube->mi->map[(int)(ray->pos.y / TILE_SIZE)][(int)(ray->pos.x / TILE_SIZE)] == '1')
+			hit = true;
+	}
+}
+
+double	get_wall_dist(t_cube *cube, t_ray2 *ray)
+{
+	t_Vector2D	prev;
+	
+	ray->step = 0.1;
+	ray->pos.y = (cube->player->pos.y);
+	ray->pos.x = (cube->player->pos.x);
+	ray->dir.x = cos(ray->angle);
+	ray->dir.y = -sin(ray->angle);
+	find_wall_hit(cube, ray, &prev);
+	ray->face = get_face(ray->pos, (int)ray->pos.x / TILE_SIZE, (int)ray->pos.y / TILE_SIZE);
+	return (sqrt(pow(prev.x - cube->player->pos.x, 2) + pow(prev.y - cube->player->pos.y, 2)));
 }
 
 t_bool	is_minimap(t_cube *cube, int x, int y)
@@ -75,19 +85,19 @@ t_bool	is_minimap(t_cube *cube, int x, int y)
 	return (false);
 }
 
-void	wall_face_color(t_cube *cube)
+void	wall_face_color(t_ray2 *ray)
 {
-	if (cube->ray->face == 'N')
-		cube->ray->color = RED;
-	else if (cube->ray->face == 'S')
-		cube->ray->color = GREEN;
-	else if (cube->ray->face == 'E')
-		cube->ray->color = BLUE;
-	else if (cube->ray->face == 'W')
-		cube->ray->color = PINK;
+	if (ray->face == 'N')
+		ray->color = RED;
+	else if (ray->face == 'S')
+		ray->color = GREEN;
+	else if (ray->face == 'E')
+		ray->color = BLUE;
+	else if (ray->face == 'W')
+		ray->color = PINK;
 }
 
-void	draw_wall(t_cube *cube, double wall_dist, int nb_ray)
+void	draw_wall(t_cube *cube, t_ray2 *ray, double wall_dist, int nb_ray)
 {
 	int	height;
 	int	p_top;
@@ -107,7 +117,7 @@ void	draw_wall(t_cube *cube, double wall_dist, int nb_ray)
 			if (!is_minimap(cube, nb_ray, pix) && pix < p_top)
 				put_pixel(cube, cube->mi->c->hex, nb_ray, pix);
 			else if (!is_minimap(cube, nb_ray, pix) && pix < p_bot)
-				put_pixel(cube, cube->ray->color, nb_ray, pix);
+				put_pixel(cube, ray->color, nb_ray, pix);
 			else if (!is_minimap(cube, nb_ray, pix))
 				put_pixel(cube, cube->mi->f->hex, nb_ray, pix);
 	}
@@ -116,19 +126,17 @@ void	draw_wall(t_cube *cube, double wall_dist, int nb_ray)
 void	cast_rays(t_cube *cube)
 {
 	int		nb_ray;
-	double	angle;
+	t_ray2	ray;
 	double	wall_dist;
 
-	int		i;
 	nb_ray = WIDTH;
-	angle = (cube->player->angle- cube->player->fov / 2 * RADIAN);
+	ray.angle = (cube->player->angle- cube->player->fov / 2 * RADIAN);
 	while (nb_ray-- > 0)
 	{
-		i = -1;
-		wall_dist = get_inter(cube, angle);
-		wall_face_color(cube);
-		draw_wall(cube, wall_dist, nb_ray);
-		draw_ray_minimap(cube, angle, wall_dist);
-		angle += RADIAN * cube->player->fov / WIDTH;
+		wall_dist = get_wall_dist(cube, &ray);
+		wall_face_color(&ray);
+		draw_wall(cube, &ray, wall_dist * cos(ray.angle - cube->player->angle), nb_ray);
+		draw_ray_minimap(cube, ray.angle, wall_dist);
+		ray.angle += RADIAN * cube->player->fov / WIDTH;
 	}	
 }

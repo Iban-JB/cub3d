@@ -158,6 +158,17 @@ typedef struct s_ray
 	int			color;
 }	t_ray;
 
+typedef struct s_ray2
+{
+	t_Vector2D	dir;
+	t_Vector2D	pos;
+	t_Vector2D	prev;
+	int			color;
+	char		face;
+	double		step;
+	double		angle;
+}	t_ray2;
+
 typedef struct s_cube
 {
 	void			*mlx;

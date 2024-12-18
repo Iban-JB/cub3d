@@ -58,14 +58,12 @@ void	draw_minimap(t_cube *cube)
 
 void	draw_ray_minimap(t_cube * cube, double angle, double wall_dst)
 {
-	// t_Vector2D	dir;
 	t_Vector2D	ray;
 
 	int	i = -1;
 	cube->ray->dir.x = cos(angle);
 	cube->ray->dir.y = sin(-angle);
-	// printf("dist = %d\n", dist);
-	while (++i < wall_dst) //ajouter la dist de (colision / TILE_SIZE) pour arreter de rayon au bon endroit
+	while (++i < wall_dst)
 	{
 		ray.x = cube->player->pos.x + cube->ray->dir.x * i;
 		ray.y = cube->player->pos.y + cube->ray->dir.y * i;

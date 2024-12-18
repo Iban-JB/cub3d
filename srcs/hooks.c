@@ -26,6 +26,10 @@ void	turn_player(t_cube *cube, int dir)
 		cube->player->angle += 0.05;
 	else
 		cube->player->angle -= 0.05;
+	if (cube->player->angle < 0.0001)
+		cube->player->angle += 2 * M_PI;
+	else if (cube->player->angle > 2 * M_PI)
+		cube->player->angle -= 2 * M_PI;
 }
 
 
