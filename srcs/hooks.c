@@ -11,8 +11,24 @@
 /* ************************************************************************** */
 
 #include "cub3D.h"
-#include <X11/keysym.h>
 #include <X11/X.h>
+#include <X11/keysym.h>
+
+void	handle_moves(t_cube *cube)
+{
+	if (cube->player->moves.key_w)
+		m_forward(cube);
+	if (cube->player->moves.key_s)
+		m_backward(cube);
+	if (cube->player->moves.key_a)
+		m_left(cube);
+	if (cube->player->moves.key_d)
+		m_right(cube);
+	if (cube->player->moves.left_arrow)
+		turn_player(cube, 0);
+	if (cube->player->moves.right_arrow)
+		turn_player(cube, 1);
+}
 
 int	close_window(t_cube *cube)
 {
@@ -32,7 +48,6 @@ void	turn_player(t_cube *cube, int dir)
 		cube->player->angle -= 2 * M_PI;
 }
 
-
 int	key_release(int keycode, t_cube *cube)
 {
 	if (keycode == XK_w)
@@ -48,7 +63,6 @@ int	key_release(int keycode, t_cube *cube)
 	else if (keycode == XK_Right)
 		cube->player->moves.right_arrow = false;
 	return (0);
-
 }
 
 int	key_press(int keycode, t_cube *cube)

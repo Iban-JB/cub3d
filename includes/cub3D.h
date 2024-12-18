@@ -42,12 +42,12 @@
 # define BACKWARD 1
 # define LEFT 2
 # define RIGHT 3
-# define MARGIN TILE_SIZE / 4
+# define MARGIN 2
 
 # define M_PI 3.14159265358979323846
 # define RWEST 3.14159265358979323846
-# define RSOUTH 3 * M_PI / 2
-# define RNORTH M_PI / 2
+# define RSOUTH 4.71238898038
+# define RNORTH 1.57079632679
 # define REAST 0
 # define RADIAN 0.0174533f
 
@@ -136,28 +136,6 @@ typedef struct s_player_info
 	t_inputs	moves;
 }	t_player_info;
 
-typedef struct s_ray
-{
-	t_Vector2D	dir;
-	t_Vector2D	start;
-	t_Vector2D	step;
-	t_Vector2D	s_dst;
-	t_Vector2D	d_dst;
-	t_Vector2D	cam_plane;
-	t_Vector2D	map;
-	t_Vector2D	prev;
-	double		angle;
-	double		wall_dst;
-	double		wall_x;
-	int			side;
-	int 		hit;
-	char		face;
-	int			height;
-	int			draw_start;
-	int			draw_end;
-	int			color;
-}	t_ray;
-
 typedef struct s_ray2
 {
 	t_Vector2D	dir;
@@ -176,7 +154,6 @@ typedef struct s_cube
 	t_data			*data;
 	t_map_info		*mi;
 	t_player_info	*player;
-	t_ray			*ray;
 }	t_cube;
 
 t_bool	parse_map(char *path, t_cube *cube);
@@ -205,13 +182,17 @@ void	m_forward(t_cube *cube);
 void	m_backward(t_cube *cube);
 void	m_right(t_cube *cube);
 void	m_left(t_cube *cube);
-void	update_pos_player(t_cube *cube, double new_x, double new_y);
 int		key_release(int keycode, t_cube *cube);
 void	handle_moves(t_cube *cube);
 void	cast_rays(t_cube *cube);
 void    draw_rectangle(t_cube *cube, int x, int y, int color, int size);
 void	turn_player(t_cube *cube, int keycode);
-t_bool	is_wall(t_cube *cube, double y, double x, int flag);
-void	draw_ray_minimap(t_cube * cube, double angle, double wall_dist);
+void	draw_ray_minimap(t_cube *cube, double angle, double wall_dst);
+void	count_len_and_line(char **map, int *len, int *lines);
+char	get_face(t_Vector2D hit, int x, int y);
+void	find_wall_hit(t_cube *cube, t_ray2 *ray, t_Vector2D *prev);
+void	read_stock_file(char *path, t_cube *cube);
+void	find_spawn_player(t_cube *cube);
+t_bool	is_empty_line(char *line);
 
 #endif

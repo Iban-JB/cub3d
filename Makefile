@@ -45,7 +45,6 @@ SRCS_FILES = main.c \
 			 init.c \
 			 utils.c \
 			 parsing_utils.c \
-			 debug.c \
 			 check_file.c \
 			 modify_map.c \
 			 display.c \
@@ -54,7 +53,10 @@ SRCS_FILES = main.c \
 			 hooks.c \
 			 free.c \
 			 movements.c \
-			 rays.c
+			 map_utils.c \
+			 rays_utils.c \
+			 rays.c \
+			 read_file.c
 
 INCS_FILES = cub3D.h \
 			 msg.h 

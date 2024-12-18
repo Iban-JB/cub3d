@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_file.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ibjean-b <ibjean-b@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024-12-18 16:29:39 by ibjean-b          #+#    #+#             */
+/*   Updated: 2024-12-18 16:29:39 by ibjean-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 #include "msg.h"
 
@@ -30,9 +42,9 @@ t_bool	validate_file(char *path, char *extension)
 	return (true);
 }
 
-void  check_file(t_cube *cube)
+void	check_file(t_cube *cube)
 {
-	size_t  i;
+	size_t	i;
 
 	i = -1;
 	while (cube->mi->file[++i])

@@ -12,63 +12,6 @@
 
 #include "cub3D.h"
 
-int	get_width_max(char **map)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-			j++;
-		i++;
-	}
-	return (i);
-}
-
-int	get_len_max(char **map)
-{
-	int	i;
-	int	j;
-	int	len_max;
-
-	i = 0;
-	len_max = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-			j++;
-		if (j > len_max)
-			len_max = j;
-		i++;
-	}
-	return (len_max);
-}
-
-void	count_len_and_line(char	**map, int *len, int *lines)
-{
-	int	i;
-	int	j;
-	int	len_max;
-	
-	len_max = 0;
-	i = 0;
-	while (map[i])
-	{
-		j = 0;
-		while (map[i][j])
-			j++;
-		if (j > len_max)
-			len_max = j;
-		i++;
-	}
-	*len = len_max;
-	*lines = i;
-}
-
 void	fill_new_map(t_cube *cube, char **new_map, int len_max)
 {
 	int		i;
@@ -93,7 +36,7 @@ void	find_and_repalce(char **new_map, char c, char new_c)
 {
 	int	i;
 	int	j;
-	
+
 	i = 0;
 	while (new_map[i])
 	{
@@ -113,7 +56,7 @@ void	modify_char_in_map(t_cube *cube, char c, char new_c)
 	int		len;
 	int		nb_line;
 	char	**new_map;
-	
+
 	len = 0;
 	nb_line = 0;
 	count_len_and_line(cube->mi->map, &len, &nb_line);

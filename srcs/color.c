@@ -15,11 +15,10 @@
 void	put_pixel(t_cube *cube, unsigned int color, int x, int y)
 {
 	char	*dst;
-	
-	if (!cube || !cube->data->addr || x < 0 || y < 0  || x > WIDTH || y > HEIGHT)
+
+	if (!cube || !cube->data->addr || x < 0 || y < 0 || x > WIDTH || y > HEIGHT)
 		return ;
-	dst = cube->data->addr + \
-	(y * cube->data->line_length + x * (cube->data->bits_per_pixel / 8));
+	dst = cube->data->addr + (y * cube->data->line_length + x
+			* (cube->data->bits_per_pixel / 8));
 	*(unsigned int *)dst = color;
 }
-	

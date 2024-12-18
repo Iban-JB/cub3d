@@ -12,7 +12,6 @@
 
 #include "cub3D.h"
 
-
 void	free_color(t_color *color)
 {
 	if (color)
@@ -22,7 +21,7 @@ void	free_color(t_color *color)
 	}
 }
 
-void	free_mlx(t_cube * cube)
+void	free_mlx(t_cube *cube)
 {
 	if (cube)
 	{
@@ -74,8 +73,6 @@ void	free_exit(t_cube *cube)
 			free(cube->player);
 		if (cube->mi)
 			free_map_info(cube);
-		if (cube->ray)
-			free(cube->ray);
 		free_mlx(cube);
 		free(cube);
 	}

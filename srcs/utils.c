@@ -41,13 +41,6 @@ char	*ft_strndup(const char *s, size_t len)
 	return (dup);
 }
 
-int	skip_spaces(char *str, size_t i)
-{
-	while (str[i] == ' ')
-		i++;
-	return (i);
-}
-
 void	ft_free_tab(char **arr)
 {
 	int	i;

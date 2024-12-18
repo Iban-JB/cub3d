@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "cub3D.h"
-# include <math.h>
-
 
 t_bool	in_charset(char *charset, char c)
 {
@@ -31,22 +29,22 @@ void	set_spawn_player(t_cube *cube, int i, int j)
 
 	spawn_dir = cube->mi->map[i][j];
 	if (spawn_dir == 'N')
-		cube->player->angle = RNORTH; //angle du joueur par rapport a sa direction de spawn
+		cube->player->angle = RNORTH;
 	else if (spawn_dir == 'S')
-		cube->player->angle = RSOUTH; //pareil sud
+		cube->player->angle = RSOUTH;
 	else if (spawn_dir == 'E')
-		cube->player->angle = 0;  //pareil est
+		cube->player->angle = 0;
 	else if (spawn_dir == 'W')
-		cube->player->angle = RWEST;  //pareil ouest
-	cube->player->pos.y = (i * TILE_SIZE) + TILE_SIZE / 2; //  + TILE_SIZE / 2
-	cube->player->pos.x = (j * TILE_SIZE) + TILE_SIZE / 2; //  + TILE_SIZE / 2
+		cube->player->angle = RWEST;
+	cube->player->pos.y = (i * TILE_SIZE) + TILE_SIZE / 2;
+	cube->player->pos.x = (j * TILE_SIZE) + TILE_SIZE / 2;
 }
 
 void	find_spawn_player(t_cube *cube)
 {
 	int		i;
 	int		j;
-	char 	*charset;
+	char	*charset;
 
 	charset = "NSEW";
 	i = 0;
@@ -59,25 +57,10 @@ void	find_spawn_player(t_cube *cube)
 			{
 				set_spawn_player(cube, i, j);
 				cube->mi->map[i][j] = '0';
-				printf("player pos x = %d\n", i);
-				printf("player pos y = %d\n", j);
-				break;
+				break ;
 			}
 			j++;
 		}
 		i++;
 	}
-}
-
-void	init_player(t_cube *cube)
-{
-	cube->player->moves.key_w = false;
-	cube->player->moves.key_s = false;
-	cube->player->moves.key_a = false;
-	cube->player->moves.key_d = false;
-	cube->player->speed = MARGIN;
-	cube->player->fov = 60;
-	cube->mi->nb_line = get_width_max(cube->mi->map);
-	cube->mi->len_line = get_len_max(cube->mi->map);
-	find_spawn_player(cube);
 }

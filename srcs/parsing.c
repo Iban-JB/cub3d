@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ibjean-b <ibjean-b@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024-12-18 17:30:37 by ibjean-b          #+#    #+#             */
+/*   Updated: 2024-12-18 17:30:37 by ibjean-b         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "cub3D.h"
 #include "msg.h"
 
@@ -52,8 +64,8 @@ static t_bool	is_rgb_format(char **rgb)
 
 static t_bool	get_color(char *line, t_cube *cube, t_color	**color, char *id)
 {
+	int		j;
 	char	**split;
-	int	j;
 
 	j = -1;
 	if (!cmp_n_char_after_spaces(line, id, 2))
@@ -100,7 +112,9 @@ t_bool	assign_textures(char **file, t_cube *cube)
 			i++;
 		else
 			i++;
-		if (cube->mi->n && cube->mi->s && cube->mi->w && cube->mi->e && cube->mi->c->complete_color && cube->mi->f->complete_color)
+		if (cube->mi->n && cube->mi->s && \
+		cube->mi->w && cube->mi->e && cube->mi->c->complete_color \
+		&& cube->mi->f->complete_color)
 			return (true);
 	}
 	return (false);
@@ -118,57 +132,6 @@ t_bool	is_empty_line(char *line)
 	if (line[i] == '\n')
 		return (true);
 	return (false);
-}
-
-void	read_stock_file(char *path, t_cube *cube)
-{
-	int		fd;
-	char	*tp;
-	char	**temp_file;
-	char	**final_file;
-	t_bool	in_map;
-
-	in_map = false;
-	final_file = NULL;
-	temp_file = NULL;
-	fd = open(path, O_RDONLY);
-	if (fd == -1)
-		free_exit(cube);
-	tp = get_next_line(fd);
-	if (!tp)
-		free_exit(cube);
-	while (tp)
-	{
-		if (!in_map)
-			if (cmp_n_char_after_spaces(tp, "1", 1) || cmp_n_char_after_spaces(tp, "0", 1))
-				in_map = true;
-		if (!is_empty_line(tp) || in_map)
-		{
-			temp_file = tab_join(final_file, tp);
-			free(tp);
-			ft_free_tab(final_file);
-			if (!temp_file)
-			{
-				close(fd);
-				free_exit(cube);
-			}
-			final_file = tab_dup(temp_file);
-			ft_free_tab(temp_file);
-			if (!final_file)
-			{
-				close(fd);
-				free_exit(cube);
-			}
-		}
-		else
-			free(tp);
-		tp = get_next_line(fd);
-	}
-	close(fd);
-	cube->mi->file = tab_dup(final_file);
-	ft_free_tab(final_file);
-	if (!cube->mi->file)
-		free_exit(cube);
 }
 
 void	find_map(t_cube *cube)
@@ -199,7 +162,6 @@ void	find_map(t_cube *cube)
 	}
 }
 
-
 t_bool	parse_map(char *path, t_cube *cube)
 {
 	read_stock_file(path, cube);
@@ -211,7 +173,6 @@ t_bool	parse_map(char *path, t_cube *cube)
 	modify_char_in_map(cube, ' ', 'X');
 	if (!is_map_valid(cube->mi->map))
 		free_exit(cube);
-	print_map_info(cube);
 	modify_char_in_map(cube, 'X', '1');
 	return (true);
 }
