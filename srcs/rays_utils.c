@@ -30,9 +30,11 @@ char	get_face(t_Vector2D hit, int x, int y)
 		return ('N');
 }
 
-void	find_wall_hit(t_cube *cube, t_ray2 *ray, t_Vector2D *prev)
+void	find_wall_hit(t_cube *cube, t_ray *ray, t_Vector2D *prev)
 {
 	t_bool	hit;
+	int		map_x;
+	int		map_y;
 
 	hit = false;
 	while (!hit && ray->step > 0.000001)
@@ -41,8 +43,9 @@ void	find_wall_hit(t_cube *cube, t_ray2 *ray, t_Vector2D *prev)
 		prev->y = ray->pos.y;
 		ray->pos.x += ray->dir.x * ray->step;
 		ray->pos.y += ray->dir.y * ray->step;
-		if (cube->mi->map[(int)(ray->pos.y / TILE_SIZE)][(int) \
-		(ray->pos.x / TILE_SIZE)] == '1')
+		map_x = (int)(ray->pos.x / TILE_SIZE);
+		map_y = (int)(ray->pos.y / TILE_SIZE);
+		if (cube->mi->map[map_y][map_x] == '1')
 		{
 			ray->step /= 10;
 			ray->pos.x = prev->x;

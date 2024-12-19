@@ -12,7 +12,7 @@
 
 #include "cub3D.h"
 
-double	get_wall_dist(t_cube *cube, t_ray2 *ray)
+double	get_wall_dist(t_cube *cube, t_ray *ray)
 {
 	t_Vector2D	prev;
 
@@ -40,7 +40,7 @@ t_bool	is_minimap(t_cube *cube, int x, int y)
 	return (false);
 }
 
-void	wall_face_color(t_ray2 *ray)
+void	wall_face_color(t_ray *ray)
 {
 	if (ray->face == 'N')
 		ray->color = RED;
@@ -52,7 +52,7 @@ void	wall_face_color(t_ray2 *ray)
 		ray->color = PINK;
 }
 
-void	draw_wall(t_cube *cube, t_ray2 *ray, double wall_dist, int nb_ray)
+void	draw_wall(t_cube *cube, t_ray *ray, double wall_dist, int nb_ray)
 {
 	int	height;
 	int	p_top;
@@ -81,7 +81,7 @@ void	draw_wall(t_cube *cube, t_ray2 *ray, double wall_dist, int nb_ray)
 void	cast_rays(t_cube *cube)
 {
 	int		nb_ray;
-	t_ray2	ray;
+	t_ray	ray;
 	double	wall_dist;
 
 	nb_ray = WIDTH;

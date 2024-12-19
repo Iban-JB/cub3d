@@ -114,6 +114,15 @@ typedef struct s_parse_info
 	t_check_map		check;
 }	t_map_info;
 
+typedef struct s_read_file
+{
+	int		fd;
+	char	*tp;
+	char	**temp_file;
+	char	**final_file;
+	t_bool	in_map;
+}	t_read_file;
+
 typedef struct s_inputs
 {
 	t_bool	key_w;
@@ -145,7 +154,7 @@ typedef struct s_ray2
 	char		face;
 	double		step;
 	double		angle;
-}	t_ray2;
+}	t_ray;
 
 typedef struct s_cube
 {
@@ -190,7 +199,7 @@ void	turn_player(t_cube *cube, int keycode);
 void	draw_ray_minimap(t_cube *cube, double angle, double wall_dst);
 void	count_len_and_line(char **map, int *len, int *lines);
 char	get_face(t_Vector2D hit, int x, int y);
-void	find_wall_hit(t_cube *cube, t_ray2 *ray, t_Vector2D *prev);
+void	find_wall_hit(t_cube *cube, t_ray *ray, t_Vector2D *prev);
 void	read_stock_file(char *path, t_cube *cube);
 void	find_spawn_player(t_cube *cube);
 t_bool	is_empty_line(char *line);

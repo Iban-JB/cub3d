@@ -60,7 +60,7 @@ void	draw_minimap(t_cube *cube)
 void	draw_ray_minimap(t_cube *cube, double angle, double wall_dst)
 {
 	int		i;
-	t_ray2	ray;
+	t_ray	ray;
 
 	i = -1;
 	ray.dir.x = cos(angle);

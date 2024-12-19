@@ -12,53 +12,49 @@
 
 #include "cub3D.h"
 
-void	read_stock_file(char *path, t_cube *cube)
+void	loop_read_file(t_cube *cube, t_read_file *file_data)
 {
-	int		fd;
-	char	*tp;
-	char	**temp_file;
-	char	**final_file;
-	t_bool	in_map;
-
-	in_map = false;
-	final_file = NULL;
-	temp_file = NULL;
-	fd = open(path, O_RDONLY);
-	if (fd == -1)
-		free_exit(cube);
-	tp = get_next_line(fd);
-	if (!tp)
-		free_exit(cube);
-	while (tp)
+	while (file_data->tp)
 	{
-		if (!in_map)
-			if (cmp_n_char_after_spaces(tp, "1", 1) || cmp_n_char_after_spaces(tp, "0", 1))
-				in_map = true;
-		if (!is_empty_line(tp) || in_map)
+		if (!file_data->in_map && (cmp_n_char_after_spaces(file_data->tp, \
+		"1", 1) || cmp_n_char_after_spaces(file_data->tp, "0", 1)))
+			file_data->in_map = true;
+		if (!is_empty_line(file_data->tp) || file_data->in_map)
 		{
-			temp_file = tab_join(final_file, tp);
-			free(tp);
-			ft_free_tab(final_file);
-			if (!temp_file)
-			{
-				close(fd);
+			file_data->temp_file = \
+			tab_join(file_data->final_file, file_data->tp);
+			free(file_data->tp);
+			ft_free_tab(file_data->final_file);
+			if (!file_data->temp_file && close(file_data->fd))
 				free_exit(cube);
-			}
-			final_file = tab_dup(temp_file);
-			ft_free_tab(temp_file);
-			if (!final_file)
-			{
-				close(fd);
+			file_data->final_file = tab_dup(file_data->temp_file);
+			ft_free_tab(file_data->temp_file);
+			if (!file_data->final_file && close(file_data->fd))
 				free_exit(cube);
-			}
 		}
 		else
-			free(tp);
-		tp = get_next_line(fd);
+			free(file_data->tp);
+		file_data->tp = get_next_line(file_data->fd);
 	}
-	close(fd);
-	cube->mi->file = tab_dup(final_file);
-	ft_free_tab(final_file);
+}
+
+void	read_stock_file(char *path, t_cube *cube)
+{
+	t_read_file	file_datas;
+
+	file_datas.in_map = false;
+	file_datas.final_file = NULL;
+	file_datas.temp_file = NULL;
+	file_datas.fd = open(path, O_RDONLY);
+	if (file_datas.fd == -1)
+		free_exit(cube);
+	file_datas.tp = get_next_line(file_datas.fd);
+	if (!file_datas.tp)
+		free_exit(cube);
+	loop_read_file(cube, &file_datas);
+	close(file_datas.fd);
+	cube->mi->file = tab_dup(file_datas.final_file);
+	ft_free_tab(file_datas.final_file);
 	if (!cube->mi->file)
 		free_exit(cube);
 }
