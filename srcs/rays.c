@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 15:37:50 by ibjean-b          #+#    #+#             */
-/*   Updated: 2025/01/13 17:34:48 by talibert         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:40:53 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,49 +30,81 @@ t_bool	unit_cirle(double angle, char axis)
 double	get_horz_inter(t_cube *cube, t_ray *ray)
 {
 	// printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
+	int		hit;
 	double	x_inter;
 	double	y_inter;
 	double	x_step;
 	double	y_step;
 
+	hit = 0;
 	y_step = TILE_SIZE;
 	x_step = TILE_SIZE / tan(ray->angle);
 	// printf("step x = %f | y = %f\n", x_step, y_step);
 	if (ray->angle < M_PI)
+	{
 		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE - 1;
+	}
 	else 
+	{
 		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+		x_step *= -1;
+		y_step *= -1;
+	}
+	if (ray->angle == 0 || ray->angle == M_PI)
+		return (-1);
 	x_inter = cube->player->pos.x - (y_inter - cube->player->pos.y) / tan(ray->angle);
-	draw_rectangle(cube, x_inter, y_inter, GREEN, 10);
+	while (!hit)
+	{
+		//draw_rectangle(cube, x_inter, y_inter, GREEN, 10);
+		if (y_inter < 0 || x_inter < 0 || y_inter > TILE_SIZE * cube->mi->nb_line || x_inter > TILE_SIZE * cube->mi->len_line)
+			break ;
+		if (cube->mi->map[(int)(y_inter / TILE_SIZE)][(int)(x_inter / TILE_SIZE)] == '1')
+			hit = 1;
+		x_inter += x_step;
+		y_inter -= y_step;
+	}
 	// if (!look_up(ray->angle))
 	// 	y_step *= -1;
 	
-	// printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
-	return (10);
+	printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
+	return (sqrt(pow(x_inter - cube->player->pos.x, 2) + pow(y_inter - cube->player->pos.y, 2)));
 }
 
 double	get_vert_inter(t_cube *cube, t_ray *ray)
 {
 	// printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
+	int		hit;
 	double	x_inter;
 	double	y_inter;
 	double	x_step;
 	double	y_step;
 
+	hit = 0;
 	x_step = TILE_SIZE;
 	y_step = TILE_SIZE * tan(ray->angle);
+	if (ray->angle == RNORTH || ray->angle == RSOUTH)
+		return (-1);
 	// printf("step x = %f | y = %f\n", x_step, y_step);
 	if (ray->angle < RNORTH || ray->angle > RSOUTH)
-		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+	{
+		x_inter = floor(cube->player->pos.x / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+		x_step *= -1;
+		y_step *= -1;
+	}
 	else 
-		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE - 1;
-	x_inter = cube->player->pos.x - (y_inter - cube->player->pos.y) * tan(ray->angle);
-	draw_rectangle(cube, x_inter, y_inter, RED, 10);
-	// if (!look_up(ray->angle))
-	// 	y_step *= -1;
-	
-	// printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
-	return (10);
+		x_inter = floor(cube->player->pos.x / TILE_SIZE) * TILE_SIZE - 1;
+	y_inter = cube->player->pos.y - (x_inter - cube->player->pos.x) * tan(ray->angle);
+	while (!hit)
+	{
+		// draw_rectangle(cube, x_inter, y_inter, RED, 10);
+		if (y_inter < 1 || x_inter < 1 || y_inter > TILE_SIZE * cube->mi->nb_line - 1 || x_inter > TILE_SIZE * cube->mi->len_line - 1)
+			break ;
+		if (cube->mi->map[(int)(y_inter / TILE_SIZE)][(int)(x_inter / TILE_SIZE)] == '1')
+			hit = 1;
+		x_inter -= x_step;
+		y_inter += y_step;
+	}
+	return (sqrt(pow(x_inter - cube->player->pos.x, 2) + pow(y_inter - cube->player->pos.y, 2)));
 }
 
 double	find_small_inter(t_cube *cube, t_ray *ray)
@@ -82,7 +114,18 @@ double	find_small_inter(t_cube *cube, t_ray *ray)
 
 	h_inter = get_horz_inter(cube, ray);
 	v_inter = get_vert_inter(cube, ray);
-	return (h_inter);
+	if (h_inter < v_inter || v_inter == -1)
+	{
+		printf("h_inter = %f\n", h_inter);
+		return (h_inter);
+	}
+	else if (v_inter < h_inter || h_inter == -1)
+	{
+		printf("v_inter = %f\n", v_inter);
+		return (v_inter);
+	}
+	else
+		return (-1);
 }
 
 t_bool	is_minimap(t_cube *cube, int x, int y)
@@ -143,13 +186,16 @@ void	cast_rays(t_cube *cube)
 
 	nb_ray = WIDTH;
 	ray.angle = (cube->player->angle - cube->player->fov / 2 * RADIAN);
-	while (nb_ray-- > WIDTH - 2)
+	if (ray.angle < 0)
+		ray.angle += 2 * M_PI;
+	while (nb_ray-- > 0)
 	{
 		wall_dist = find_small_inter(cube, &ray);
-		// wall_face_color(&ray);
-		// draw_wall(cube, &ray, wall_dist * cos(ray.angle - cube->player->angle),
-		// 	nb_ray);
+		printf("angle = %f\n", ray.angle);
+		wall_face_color(&ray);
+		draw_wall(cube, &ray, wall_dist * cos(ray.angle - cube->player->angle),
+			nb_ray);
 		ray.angle += RADIAN * cube->player->fov / WIDTH;
-		draw_ray_minimap(cube, ray.angle, 100);
+		draw_ray_minimap(cube, ray.angle, wall_dist);
 	}
 }

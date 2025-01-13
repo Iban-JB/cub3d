@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:44:47 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/12/12 19:21:55 by talibert         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:24:24 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	turn_player(t_cube *cube, int dir)
 		cube->player->angle += 0.05;
 	else
 		cube->player->angle -= 0.05;
-	if (cube->player->angle < 0.0001)
+	if (cube->player->angle < 0)
 		cube->player->angle += 2 * M_PI;
 	else if (cube->player->angle > 2 * M_PI)
 		cube->player->angle -= 2 * M_PI;

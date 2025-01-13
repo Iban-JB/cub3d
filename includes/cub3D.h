@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 18:39:19 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/12/17 14:02:17 by talibert         ###   ########.fr       */
+/*   Updated: 2025/01/13 18:28:35 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define TITLE "cub3D"
 # define HEIGHT 720
 # define WIDTH 1080
-# define TILE_SIZE 32
+# define TILE_SIZE 8
 # define RAYMAX 500
 # define FOV 60
 
