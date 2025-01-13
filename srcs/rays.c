@@ -12,16 +12,24 @@
 
 #include "cub3D.h"
 
-t_bool	look_up(double angle)
+t_bool	unit_cirle(double angle, char axis)
 {
-	if (angle > 0 && angle < M_PI)
-		return (true);
+	if (axis == 'x')
+	{
+		if (angle > 0 && angle < M_PI / 2)
+			return (true);
+	}
+	else if (axis == 'y')
+	{
+		if (angle > 3 * M_PI / 2 && angle < M_PI / 2)
+			return (true);
+	}
 	return (false);
 }
 
 double	get_horz_inter(t_cube *cube, t_ray *ray)
 {
-	printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
+	// printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
 	double	x_inter;
 	double	y_inter;
 	double	x_step;
@@ -29,12 +37,13 @@ double	get_horz_inter(t_cube *cube, t_ray *ray)
 
 	y_step = TILE_SIZE;
 	x_step = TILE_SIZE / tan(ray->angle);
-	printf("step x = %f | y = %f\n", x_step, y_step);
-	y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE;
-	x_inter = cube->player->pos.x + (y_inter - cube->player->pos.y) / tan(ray->angle);
+	// printf("step x = %f | y = %f\n", x_step, y_step);
+	y_inter = floor(cube->player->pos.x / TILE_SIZE) * TILE_SIZE;
+	x_inter = cube->player->pos.y + (y_inter - cube->player->pos.x) / tan(ray->angle);
 	if (!look_up(ray->angle))
 		y_step *= -1;
-	printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
+	
+	// printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
 	return (10);
 }
 
