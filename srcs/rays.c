@@ -6,26 +6,46 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 15:37:50 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/12/17 14:14:22 by talibert         ###   ########.fr       */
+/*   Updated: 2025/01/06 17:07:29 by ibjean-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub3D.h"
 
-double	get_wall_dist(t_cube *cube, t_ray *ray)
+t_bool	look_up(double angle)
 {
-	t_Vector2D	prev;
+	if (angle > 0 && angle < M_PI)
+		return (true);
+	return (false);
+}
 
-	ray->step = 0.1;
-	ray->pos.y = (cube->player->pos.y);
-	ray->pos.x = (cube->player->pos.x);
-	ray->dir.x = cos(ray->angle);
-	ray->dir.y = -sin(ray->angle);
-	find_wall_hit(cube, ray, &prev);
-	ray->face = get_face(ray->pos, (int)ray->pos.x / TILE_SIZE, (int)ray->pos.y
-			/ TILE_SIZE);
-	return (sqrt(pow(prev.x - cube->player->pos.x, 2) + pow(prev.y
-				- cube->player->pos.y, 2)));
+double	get_horz_inter(t_cube *cube, t_ray *ray)
+{
+	printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
+	double	x_inter;
+	double	y_inter;
+	double	x_step;
+	double	y_step;
+
+	y_step = TILE_SIZE;
+	x_step = TILE_SIZE / tan(ray->angle);
+	printf("step x = %f | y = %f\n", x_step, y_step);
+	y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE;
+	x_inter = cube->player->pos.x + (y_inter - cube->player->pos.y) / tan(ray->angle);
+	if (!look_up(ray->angle))
+		y_step *= -1;
+	printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
+	return (10);
+}
+
+double	find_small_inter(t_cube *cube, t_ray *ray)
+{
+	double	h_inter;
+	// double	v_inter;
+
+	h_inter = get_horz_inter(cube, ray);
+	// v_inter = get_vert_inter(cube, ray);
+	return (h_inter);
 }
 
 t_bool	is_minimap(t_cube *cube, int x, int y)
@@ -86,13 +106,13 @@ void	cast_rays(t_cube *cube)
 
 	nb_ray = WIDTH;
 	ray.angle = (cube->player->angle - cube->player->fov / 2 * RADIAN);
-	while (nb_ray-- > 0)
+	while (nb_ray-- > WIDTH - 2)
 	{
-		wall_dist = get_wall_dist(cube, &ray);
-		wall_face_color(&ray);
-		draw_wall(cube, &ray, wall_dist * cos(ray.angle - cube->player->angle),
-			nb_ray);
-		draw_ray_minimap(cube, ray.angle, wall_dist);
+		wall_dist = find_small_inter(cube, &ray);
+		// wall_face_color(&ray);
+		// draw_wall(cube, &ray, wall_dist * cos(ray.angle - cube->player->angle),
+		// 	nb_ray);
 		ray.angle += RADIAN * cube->player->fov / WIDTH;
+		draw_ray_minimap(cube, ray.angle, 100);
 	}
 }

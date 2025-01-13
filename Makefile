@@ -66,7 +66,7 @@ LIBFT = libft/libft.a
 MLX = mlx/libmlx.a
 
 # All compilation flags
-CFLAGS = -Wall -Wextra -Werror -g3 #Useful flags: -g3 -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -g3 -O3 #Useful flags: -g3 -fsanitize=address
 MLXFLAGS = -lX11 -lXext -lm #-Lmlx -lmlx -lX11 -lXext -lm -Lminilibx-linux -framework OpenGL -framework AppKit
 IFLAGS = -I includes \
 		 -I libft \

@@ -26,7 +26,7 @@
 # define TITLE "cub3D"
 # define HEIGHT 720
 # define WIDTH 1080
-# define TILE_SIZE 8
+# define TILE_SIZE 32
 # define RAYMAX 500
 # define FOV 60
 
@@ -152,7 +152,8 @@ typedef struct s_ray2
 	t_Vector2D	prev;
 	int			color;
 	char		face;
-	double		step;
+	double		x_step;
+	double		y_step;
 	double		angle;
 }	t_ray;
 
