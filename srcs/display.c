@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 16:59:52 by ibjean-b          #+#    #+#             */
-/*   Updated: 2024/12/16 17:48:44 by talibert         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:19:25 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	draw_minimap(t_cube *cube)
 		}
 		x++;
 	}
-	draw_rectangle(cube, cube->player->pos.x - TILE_SIZE / 2, cube->player->pos.y - TILE_SIZE / 2, PINK, TILE_SIZE);
+	//draw_rectangle(cube, cube->player->pos.x - TILE_SIZE / 2, cube->player->pos.y - TILE_SIZE / 2, PINK, TILE_SIZE);
 }
 
 void	draw_ray_minimap(t_cube *cube, double angle, double wall_dst)

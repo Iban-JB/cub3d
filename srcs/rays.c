@@ -6,7 +6,7 @@
 /*   By: talibert <talibert@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 15:37:50 by ibjean-b          #+#    #+#             */
-/*   Updated: 2025/01/06 17:07:29 by ibjean-b         ###   ########.fr       */
+/*   Updated: 2025/01/13 17:34:48 by talibert         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,38 @@ double	get_horz_inter(t_cube *cube, t_ray *ray)
 	y_step = TILE_SIZE;
 	x_step = TILE_SIZE / tan(ray->angle);
 	// printf("step x = %f | y = %f\n", x_step, y_step);
-	y_inter = floor(cube->player->pos.x / TILE_SIZE) * TILE_SIZE;
-	x_inter = cube->player->pos.y + (y_inter - cube->player->pos.x) / tan(ray->angle);
-	if (!look_up(ray->angle))
-		y_step *= -1;
+	if (ray->angle < M_PI)
+		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE - 1;
+	else 
+		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+	x_inter = cube->player->pos.x - (y_inter - cube->player->pos.y) / tan(ray->angle);
+	draw_rectangle(cube, x_inter, y_inter, GREEN, 10);
+	// if (!look_up(ray->angle))
+	// 	y_step *= -1;
+	
+	// printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
+	return (10);
+}
+
+double	get_vert_inter(t_cube *cube, t_ray *ray)
+{
+	// printf("player x = %f | y = %f\n ", cube->player->pos.x, cube->player->pos.y);
+	double	x_inter;
+	double	y_inter;
+	double	x_step;
+	double	y_step;
+
+	x_step = TILE_SIZE;
+	y_step = TILE_SIZE * tan(ray->angle);
+	// printf("step x = %f | y = %f\n", x_step, y_step);
+	if (ray->angle < RNORTH || ray->angle > RSOUTH)
+		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE;
+	else 
+		y_inter = floor(cube->player->pos.y / TILE_SIZE) * TILE_SIZE - 1;
+	x_inter = cube->player->pos.x - (y_inter - cube->player->pos.y) * tan(ray->angle);
+	draw_rectangle(cube, x_inter, y_inter, RED, 10);
+	// if (!look_up(ray->angle))
+	// 	y_step *= -1;
 	
 	// printf("inter x = %f | y = %f\n\n", x_inter, y_inter);
 	return (10);
@@ -50,10 +78,10 @@ double	get_horz_inter(t_cube *cube, t_ray *ray)
 double	find_small_inter(t_cube *cube, t_ray *ray)
 {
 	double	h_inter;
-	// double	v_inter;
+	double	v_inter;
 
 	h_inter = get_horz_inter(cube, ray);
-	// v_inter = get_vert_inter(cube, ray);
+	v_inter = get_vert_inter(cube, ray);
 	return (h_inter);
 }
 
